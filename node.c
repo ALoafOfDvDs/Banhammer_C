@@ -12,7 +12,6 @@ static char *my_strdup(char *word) {
     i += 1;
   }
   i += 1; // for the null terminator
-  // copy = (char *)malloc(i);
   copy = (char *)calloc(i, sizeof(char));
 
   int j = 0;
@@ -26,7 +25,6 @@ Node *node_create(char *oldspeak, char *newspeak) {
   Node *t = (Node *)malloc(sizeof(Node));
   if (t) {
     if (oldspeak != NULL) {
-      // printf("doing string dup of oldspeak in node create\n");
       t->oldspeak = my_strdup(oldspeak); // NOT ALLOWED TO USE STRDUP
       t->newspeak = NULL;
     } else {
@@ -65,11 +63,7 @@ void node_print(Node *n) {
   if (n->newspeak != NULL && n->oldspeak != NULL) {
     printf("%s -> %s\n", n->oldspeak, n->newspeak);
   } else if (n->oldspeak != NULL) {
-    // printf("printing here\n");
     printf("%s", n->oldspeak);
     printf("\n");
   }
-  // else {
-  //     printf("oldspeak and newspeak do not exist for this node\n");
-  // }
 }

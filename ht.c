@@ -57,23 +57,18 @@ void ht_delete(HashTable **ht) {
 uint32_t ht_size(HashTable *ht) { return ht->size; }
 
 Node *ht_lookup(HashTable *ht, char *oldspeak) {
-  // printf("called ht lookup\n");
   // stat tracking setup
   uint32_t seek_var = 0;
   uint32_t links_initial = 0;
   uint32_t links_final = 0;
   ll_stats(&seek_var, &links_initial);
-  // printf("links init: %u\n", links_initial);
 
   // functionality setep
   uint64_t index = hash(ht->salt, oldspeak);
   index = index % ht->size;
-  // printf("hashtable index for lookup: %lu\n", index);
   LinkedList *correct_ll = ht->lists[index];
-  // printf("ll_length: %u\n", ll_length(correct_ll));
   Node *node = ll_lookup(correct_ll, oldspeak);
   ll_stats(&seek_var, &links_final);
-  // printf("links final: %u\n", links_final);
   ht->n_examined += (links_final - links_initial);
   if (node) {
     ht->n_hits += 1;
@@ -86,12 +81,10 @@ Node *ht_lookup(HashTable *ht, char *oldspeak) {
 void ht_insert(HashTable *ht, char *oldspeak, char *newspeak) {
   uint64_t index = hash(ht->salt, oldspeak);
   index = index % ht->size;
-  // printf("hashtable index for insertion: %lu\n", index);
   if (ht->lists[index] ==
       NULL) { // This is supposed to check if the list at the index index has
               // been initialized, and if not we can initialize it. I am not
               // confident this works
-    // printf("created a new linked list for %s\n", oldspeak);
     ht->lists[index] = ll_create(ht->mtf);
     ll_insert(ht->lists[index], oldspeak, newspeak);
     ht->count += 1;
@@ -116,7 +109,6 @@ void ht_print(HashTable *ht) {
          ht->salt, ht->size, ht->count, ht->n_keys, ht->n_hits, ht->n_misses,
          ht->n_examined);
 
-  // printf("\nPrinting lists: \n\n");
   // I can't print the linked lists inside the ht. I cannot do that because i do
   // not have direct reference to any of the linked lists, I need an oldspeak to
   // get the hash to produce the index to know where there are valid locations

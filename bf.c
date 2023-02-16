@@ -37,7 +37,6 @@ BloomFilter *bf_create(uint32_t size) {
   if (bf) {
     bf->counter = bf->collision_tracker = 0;
 
-    // printf("got to here in bf create\n");
     bf->n_keys = bf->n_hits = 0;
     bf->n_misses = bf->n_bits_examined = 0;
     for (int i = 0; i < N_HASHES; i++) {
@@ -73,7 +72,6 @@ void bf_insert(BloomFilter *bf, char *oldspeak) {
 
     uint8_t value1 = bv_get_bit(bf->filter, hash_value);
 
-    // printf("hash value #%d: %lu\n",i, hash_value);
     bv_set_bit(bf->filter, hash_value); // this doesnt feel like it should work
 
     uint8_t value2 = bv_get_bit(bf->filter, hash_value);
@@ -84,21 +82,16 @@ void bf_insert(BloomFilter *bf, char *oldspeak) {
       bf->collision_tracker += 1;
     }
   }
-  // printf("bloomfilter insertion count: %lu\n", bf->counter);
-  // printf("bloomfilter collision count: %lu\n", bf->collision_tracker);
+
 }
 
 bool bf_probe(BloomFilter *bf, char *oldspeak) {
-  // printf("got here with string %s\n", oldspeak);
   for (int i = 0; i < N_HASHES; i += 1) {
     bf->n_bits_examined += 1;
     uint64_t hash_value = hash(bf->salts[i], oldspeak);
     hash_value = hash_value % bf->size;
-    // printf("probed hash value #%d: %lu\n",i, hash_value);
     int bit_val = bv_get_bit(bf->filter, hash_value);
-    // printf("right before bitval check %d\n", bit_val);
     if (!bit_val) {
-      // printf("got into here with probe\n");
       bf->n_misses += 1;
       return false;
     }
@@ -107,14 +100,6 @@ bool bf_probe(BloomFilter *bf, char *oldspeak) {
   return true;
 }
 
-// static uint32_t count(uint64_t val) {
-//     if (val == 0) {
-//         return 0;
-//     }
-//     else {
-//         return (val & 1) + count(val >> 1);
-//     }
-// }
 
 uint32_t bf_count(BloomFilter *bf) {
   BitVector *bv = bf->filter;
@@ -125,15 +110,7 @@ uint32_t bf_count(BloomFilter *bf) {
     counter += bv_get_bit(bf->filter, i);
     // printf("bit #%u: %lu\n", i, counter);
   }
-  // for (uint32_t i = 0; i < num_ints; i += 1) { // This works best because I
-  // can make sure i am not editing the bitvector at all by passing the uint64_t
-  // by VALUE
 
-  //     BitVector * bv = bf->filter;
-  //     uint64_t * vector_list = (*bv).vector;
-  //     uint64_t value = vector_list[i];
-  //     counter += count(value);
-  // }
   return counter;
 }
 
@@ -141,9 +118,6 @@ void bf_print(BloomFilter *bf) {
   printf("keys: %" PRIu32 "\nhits: %" PRIu32 "\nmisses: %" PRIu32
          "\nbits examined: %" PRIu32 "\nsize: %" PRIu32 "\n",
          bf->n_keys, bf->n_hits, bf->n_misses, bf->n_bits_examined, bf->size);
-  // BitVector * bv = bf->filter;
-  // uint32_t length = bv_length(bv);
-  // uint32_t num_ints = (length / 64) + ((length % 64) != 0 ? 1 : 0);
   bv_print(bf->filter);
 }
 

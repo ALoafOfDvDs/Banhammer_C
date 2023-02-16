@@ -89,15 +89,6 @@ static char *build_translation(char *word, char *translation) {
 
   return copy;
 }
-// void strcpy(char *s, char *t) {
-//     int i;
-
-//     i=0;
-//     while ((s[i] = t[i]) != '\0') {
-//         i += 1;
-//     }
-
-// }
 
 int my_strlen(char *word) {
   int i = 0;
@@ -169,72 +160,18 @@ int main(int argc, char **argv) {
   HashTable *ht = ht_create(ht_num_entries, mtf);
   FILE *badspeak = fopen("badspeak.txt", "r");
   FILE *translations = fopen("newspeak.txt", "r");
-  // FILE * test = fopen("test.txt", "r");
 
-  // int FLAG = 0;
-  // unsure of how to implement reading in the values from badspeak.txt
-  // for now we will import all words
-  // NOTE THAT THIS WILL TAKE A HOT FUCKING MINUTE
   char *word = (char *)malloc(1001);
-  char *word2; // = (char *)malloc(1001);
-  // char * returned_word = (char *)malloc(1001);
+  char *word2; 
 
   while ((fgets(word, 1001, badspeak)) != NULL) {
     // printf("word = %s\n", word);
     word2 = str_dup_for_fgets(word);
     bf_insert(bf, word2);
-    // if (!strcmp(word2, "zwaggered")) { //USING STRING COMPARE HERE AS A TEST,
-    // NEED TO REMOVE IT LATER
-    //     FLAG = 1;
-    // }
     ht_insert(ht, word2, NULL);
     free(word2);
-    // counter_all_words_added += 1;
   }
-  // now we will do the same for the newspeak translations
-  // returned_word = "starting_word";
 
-  // while ((/*returned_word = */fgets(word, 1001, badspeak)) != NULL) {
-  //     printf("got here\n");
-  //     int counter = 0;
-  //     printf("returned word: %s   line: %d\n", word, counter);
-  //     printf("check 1\n");
-  //     int str_len = sizeof(word); // should return the number of bytes used
-  //     to store returned word, and since every character is 1 byte, should
-  //     return how many  chars are in returned word int i = 0; while (i <
-  //     str_len) {
-  //         char curr = word[i];
-  //         if (!(isalnum(curr) || curr == '-' || curr == '\'')) {
-  //             // we have found a non-alphanumerical character that is not a
-  //             hyphen or apostrophe and we need to break off the word char
-  //             oldspeak_word[i+1]; for (int j = 0; j < i; j += 1) {
-  //                 oldspeak_word[j] = word[j];
-  //             }
-  //             oldspeak_word[i] = '\0';
-  //             printf("oldspeak word: %s\n", oldspeak_word);
-
-  //             // i += 1;
-
-  //             // char newspeak[str_len + 1 - i]; //THIS MIGHT NOT BE ENOUGH
-  //             // int i_copy = i;
-
-  //             // // since returned word is NULL terminated itself, I should
-  //             not have to add a NULL terminator to this
-  //             // for (int j = 0; j < str_len - i_copy; j += 1) {
-  //             //     newspeak[j] = returned_word[i];
-  //             //     i += 1;
-  //             // }
-  //             // printf("newspeak word: %s\n", newspeak);
-
-  //         }
-
-  //         i += 1;
-  //     }
-  //     counter += 1;
-  // }
-
-  // printf("\n END OF BADSPEAK \n\n\n");
-  // uint32_t num_words_added = 0;
   while ((fgets(word, 1001, translations)) != NULL) {
     // num_words_added+=1;
     // printf("returned word: %s\n", word);
@@ -243,7 +180,6 @@ int main(int argc, char **argv) {
                          // returned word, and since every character is 1 byte,
                          // should return how many  chars are in returned word
     // this is the string length of the entire line, meaning first word + space
-    // + second word + newline printf("%d\n", str_len);
     int i = 0;
     while (i < str_len) {
       char curr = word[i];
@@ -255,27 +191,18 @@ int main(int argc, char **argv) {
           oldspeak_word[j] = word[j];
         }
         oldspeak_word[i] = '\0';
-        // printf("oldspeak word: %s\n", oldspeak_word);
-        // counter_all_words_added += 1;
+
         i += 1;
 
-        char newspeak[str_len - i - 1]; // THIS MIGHT NOT BE ENOUGH
-        // printf("my string length: %d\n", str_len);
-        // printf("i val: %d\n", i);
-
-        // printf("newspeak length: %lu\n",strlen(newspeak));
-        // printf("length it should be: %d\n", str_len - i - 1);
+        char newspeak[str_len - i - 1]; 
         int i_copy = i;
 
-        // printf("len of newspeak: %d\n", str_len + 1 - i);
         // since returned word is NULL terminated itself, I should not have to
         // add a NULL terminator to this
         for (int j = 0; j < str_len - i_copy - 1; j += 1) {
           // printf("added char:%c\n", word[i]);
           newspeak[j] = word[i];
           i += 1;
-          // printf("current char = %c\n", newspeak[j]);
-          // printf("current letter: %c\n", word[i]);
         }
         // printf("current letter: %c\n", word[i]);
         newspeak[str_len - i_copy - 2] = '\0';
@@ -288,14 +215,9 @@ int main(int argc, char **argv) {
       i += 1;
     }
   }
-  // printf("\n\nEND OF TRANSLATIONS \n\n\n");
   // This marks the end of getting all the words into the hashtable and
   // bloomfilter
 
-  // printf("all words added\n");
-
-  // FILE *test = fopen("test.txt", "r");
-  // printf("adar is at least recognized as a word %d\n", FLAG);
   Parser *parser = parser_create(stdin);
   // char ** thoughtcrime_list = NULL;
   LinkedList *thoughtcrime_list = ll_create(false);
@@ -306,34 +228,12 @@ int main(int argc, char **argv) {
     word_to_read[i] = '-';
   }
   word_to_read[1000] = '\0';
-  // uint32_t thoughtcrime_index = 0; // not only will this keep track of how
-  // many words have been thoughtcrimes, but it will also tell me if there was a
-  // thoughtcrime uint32_t trans_index = 0;// not only will this keep track of
-  // how many words have been added to counsel, but it will also tell me if
-  // counsel is needed
+
   Node *node;
 
   // while(fgets(parser->current_line, 1000, parser->f) != NULL) {
   while (next_word(parser, word_to_read)) { // get a new word and make sure that
                                             // we have a new word on the line
-    // printf("word to read: %s\n", word_to_read);
-
-    // printf("string comp value %d\n", strcmp(word_to_read, "adar"));
-
-    // int i = my_strlen(word_to_read);
-    // printf("len of word = %d\n", i);
-    // char * working_word = (char *)malloc(i);
-    // for (int j = 0; j < i; j += 1) {
-    //     working_word[j] = word_to_read[j];
-    // }
-    // printf("new string comp value %d\n", strcmp(working_word, "adar"));
-
-    // Node * checkInBadSpeak = ll_lookup(thoughtcrime_list, word_to_read);
-    // Node * checkInTrans = ll_lookup(translations_required_list,
-    // word_to_read); if (checkInBadSpeak || checkInTrans) {
-    //     continue;
-    // }
-
     if (bf_probe(bf,
                  word_to_read)) { // check if the word is in the bloom filter,
                                   // if so, we need to check the hashtable
@@ -343,14 +243,8 @@ int main(int argc, char **argv) {
         // printf("%s is in the hashtable\n", word_to_read);
         if (node->newspeak ==
             NULL) { // the node exists, and does not have a translation
-          // printf("got here with word: %s\n", word_to_read);
-          // thoughtcrime_list[thoughtcrime_index] = str_dup(word_to_read);
-          // thoughtcrime_index += 1;
           word2 = str_dup(word_to_read);
           ll_insert(thoughtcrime_list, word2, NULL);
-          // ll_print(thoughtcrime_list);
-          // printf("adding word to thoughtcrime list\n");
-          // ll_print(thoughtcrime_list);
           free(word2);
         } else {
           word2 = build_translation(word_to_read, node->newspeak);
@@ -381,13 +275,7 @@ int main(int argc, char **argv) {
       ll_print(translations_required_list);
     }
   }
-  // uint32_t counter_test = bf_count(bf);
-  // printf("%u\n", counter_test);
-  // uint32_t bloom_size = bf_size(bf);
-  // float bf_load = (float)counter_test / bloom_size;
-  // printf("Bloom filter load: %1.6f\n\n", bf_load);
-  // printf("num words added (should be 14680): %u\n", counter_all_words_added);
-  // bf_print(bf);
+
   if (stats) {
     // printf("stats\n");
     // ht stats
@@ -410,9 +298,7 @@ int main(int argc, char **argv) {
     } else {
       printf("Bits examined per miss: %1.6f\n", 0.000000);
     }
-    // float examined_per_miss = ((float)bf_examined -
-    // (N_HASHES*bf_hits))/bf_misses; printf("Bits examined per miss: %1.6f\n",
-    // examined_per_miss);
+
 
     if (bf_hits != 0) {
       // printf("hits%u\n",bf_hits);
@@ -421,8 +307,6 @@ int main(int argc, char **argv) {
     } else {
       printf("False positives: %1.6f\n", 0.000000);
     }
-    // float false_positives = (float)ht_misses / bf_hits;
-    // printf("False positives: %1.6f\n", false_positives);
 
     if ((ht_hits + ht_misses) != 0) {
       float seek_len = (float)ht_examined / (ht_hits + ht_misses);
