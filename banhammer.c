@@ -99,7 +99,6 @@ int my_strlen(char *word) {
 }
 
 int main(int argc, char **argv) {
-  // uint32_t counter_all_words_added = 0;
   bool stats = false;
   bool mtf = false;
   uint32_t bf_size_var = 524288;
@@ -165,7 +164,6 @@ int main(int argc, char **argv) {
   char *word2; 
 
   while ((fgets(word, 1001, badspeak)) != NULL) {
-    // printf("word = %s\n", word);
     word2 = str_dup_for_fgets(word);
     bf_insert(bf, word2);
     ht_insert(ht, word2, NULL);
@@ -173,8 +171,6 @@ int main(int argc, char **argv) {
   }
 
   while ((fgets(word, 1001, translations)) != NULL) {
-    // num_words_added+=1;
-    // printf("returned word: %s\n", word);
     int str_len =
         my_strlen(word); // should return the number of bytes used to store
                          // returned word, and since every character is 1 byte,
@@ -200,15 +196,10 @@ int main(int argc, char **argv) {
         // since returned word is NULL terminated itself, I should not have to
         // add a NULL terminator to this
         for (int j = 0; j < str_len - i_copy - 1; j += 1) {
-          // printf("added char:%c\n", word[i]);
           newspeak[j] = word[i];
           i += 1;
         }
-        // printf("current letter: %c\n", word[i]);
         newspeak[str_len - i_copy - 2] = '\0';
-        // printf("%lu\n",strlen(newspeak));
-        // printf("char =%c\n", newspeak[str_len-i_copy-1]);
-        // printf("newspeak word: %s\n", newspeak);
         ht_insert(ht, oldspeak_word, newspeak);
         bf_insert(bf, oldspeak_word);
       }
@@ -219,7 +210,6 @@ int main(int argc, char **argv) {
   // bloomfilter
 
   Parser *parser = parser_create(stdin);
-  // char ** thoughtcrime_list = NULL;
   LinkedList *thoughtcrime_list = ll_create(false);
   LinkedList *translations_required_list = ll_create(false);
 
@@ -231,16 +221,13 @@ int main(int argc, char **argv) {
 
   Node *node;
 
-  // while(fgets(parser->current_line, 1000, parser->f) != NULL) {
   while (next_word(parser, word_to_read)) { // get a new word and make sure that
                                             // we have a new word on the line
     if (bf_probe(bf,
                  word_to_read)) { // check if the word is in the bloom filter,
                                   // if so, we need to check the hashtable
-      // printf("%s is in the bloomfilter\n", word_to_read);
       if ((node = ht_lookup(ht, word_to_read)) !=
           NULL) { // if the word IS in the hashtable then we do something
-        // printf("%s is in the hashtable\n", word_to_read);
         if (node->newspeak ==
             NULL) { // the node exists, and does not have a translation
           word2 = str_dup(word_to_read);
@@ -249,16 +236,11 @@ int main(int argc, char **argv) {
         } else {
           word2 = build_translation(word_to_read, node->newspeak);
           ll_insert(translations_required_list, word_to_read, node->newspeak);
-          // printf("adding word to translations list\n");
-          // ll_print(translations_required_list);
           free(word2);
         }
       }
     }
   }
-  // }
-
-  // printf("\n\ngot through all words in stdin\n\n\n");
 
   if (!stats) {
     if (ll_length(thoughtcrime_list) && ll_length(translations_required_list)) {
@@ -277,7 +259,6 @@ int main(int argc, char **argv) {
   }
 
   if (stats) {
-    // printf("stats\n");
     // ht stats
     uint32_t ht_keys, ht_hits, ht_misses, ht_examined;
     ht_stats(ht, &ht_keys, &ht_hits, &ht_misses, &ht_examined);
@@ -301,7 +282,7 @@ int main(int argc, char **argv) {
 
 
     if (bf_hits != 0) {
-      // printf("hits%u\n",bf_hits);
+
       float false_positives = (float)ht_misses / bf_hits;
       printf("False positives: %1.6f\n", false_positives);
     } else {
@@ -314,8 +295,6 @@ int main(int argc, char **argv) {
     } else {
       printf("Average seek length: %1.6f\n", 0.000000);
     }
-    // float seek_len = (float)ht_examined / (ht_hits + ht_misses);
-    // printf("Average seek length: %1.6f\n", seek_len);
 
     uint32_t bloom_size = bf_size(bf);
     float bf_load = (float)bf_count(bf) / bloom_size;

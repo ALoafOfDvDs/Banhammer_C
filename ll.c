@@ -103,12 +103,6 @@ Node *ll_lookup(LinkedList *ll, char *oldspeak) {
 
 void ll_insert(LinkedList *ll, char *oldspeak, char *newspeak) {
   Node *existing_node = ll_lookup(ll, oldspeak);
-  if (existing_node != NULL) {
-    // printf("printing node: ");
-    // node_print(existing_node);
-    // printf("oldspeak word: %s\n", oldspeak);
-  }
-  // printf("existing node: %p\n", (void *)existing_node);
   if (existing_node == NULL) {
     ll->length += 1;
     Node *new_node = node_create(oldspeak, newspeak);

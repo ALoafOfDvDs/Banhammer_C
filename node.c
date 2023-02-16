@@ -36,7 +36,6 @@ Node *node_create(char *oldspeak, char *newspeak) {
       //  SENTINEL NODES
     }
     if (newspeak != NULL) {
-      // printf("doing string dup of newspeak in node create\n");
       t->newspeak = my_strdup(newspeak); // NOT ALLOWED TO USE STRDUP
     }
     t->next = NULL;
@@ -46,7 +45,6 @@ Node *node_create(char *oldspeak, char *newspeak) {
 }
 
 void node_delete(Node **n) {
-  // if(*n) {
   if ((*n)->oldspeak != NULL) {
     free((*n)->oldspeak);
   }
@@ -55,7 +53,6 @@ void node_delete(Node **n) {
   }
   free(*n);
   *n = NULL;
-  // }
   return;
 }
 
